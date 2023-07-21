@@ -3,6 +3,12 @@ import time
 import mediapipe as mp
 import sys
 
+# import library ---------------------------------------------------------------
+import pygame.midi
+import threading
+from queue import Queue
+import copy
+
 class poseDetector():
 
     def __init__(self, static_image_mode = False,
@@ -43,18 +49,14 @@ class poseDetector():
                 cx, cy = int(lm.x * w), int(lm.y * h)
                 lmList.append([id, cx, cy])
                 if draw:
-                    if cx<150:
+                    if cx<600:
                         cv2.circle(img, (cx, cy), 3, (255, 0, 255), cv2.FILLED)
                     else:
                         cv2.circle(img, (cx, cy), 3, (255, 255, 0), cv2.FILLED)
 
         return lmList
 
-# import library ---------------------------------------------------------------
-import pygame.midi
-import threading
-from queue import Queue
-import copy
+
 
 """
 # define all the constant values -----------------------------------------------
@@ -87,7 +89,7 @@ player.note_off(note_Me, volume)
 
 
  
-def pose(s,l):
+def pose(q):
     #cap = cv2.VideoCapture("../PoseVideos/2.mp4")
     cap = cv2.VideoCapture(0)
     pTime = 0
@@ -97,7 +99,7 @@ def pose(s,l):
         img = cv2.resize(img, (960, 540))
         img = detector.findPose(img)
         lmList = detector.getPosition(img)
-        print(img,lmList)
+        q.put(lmList)
 
         cTime = time.time()
         fps = 1 / (cTime - pTime)
@@ -107,10 +109,11 @@ def pose(s,l):
         cv2.imshow("Image", img)
         cv2.waitKey(1)
         if cv2.waitKey(10) == ord('q'):  # wait until 'q' key is pressed
+            #exit()
             sys.exit("program stop")
             break
 
-def play_midi():
+def play_midi(q):
     
     device = 0     # device number in win10 laptop
     instrument = 9 # http://www.ccarh.org/courses/253/handout/gminstruments/
@@ -121,23 +124,32 @@ def play_midi():
     wait_time = 0.5
     
     while True:
+        lmList=q.get()
         pygame.midi.init()
         # set the output device --------------------------------------------------------
         player = pygame.midi.Output(device)
         # set the instrument -----------------------------------------------------------
         player.set_instrument(instrument)
-        player.note_on(note_Re, volume)
-        time.sleep(wait_time)
-        player.note_off(note_Re, volume)
-        time.sleep(1)
-        del player
+        print(lmList)
+        if lmList[20]:
+            if lmList[20][1]<600:
+                player.note_on(note_Re, volume)
+                time.sleep(wait_time)
+                player.note_off(note_Re, volume)
+            else:
+                player.note_on(note_Do, volume)
+                time.sleep(wait_time)
+                player.note_off(note_Do, volume)
+            time.sleep(1)
         pygame.midi.quit()
+        del player
+        
 
 def main():
     q=Queue()
     
-    thread1=threading.Thread(target=pose,name="T1",args=(q))
-    thread2=threading.Thread(target=play_midi,name="T2",args=(q.get()))
+    thread1=threading.Thread(target=pose,name="T1",args=(q,))
+    thread2=threading.Thread(target=play_midi,name="T2",args=(q,))
     thread1.start()
     thread2.start()
 
