@@ -156,7 +156,7 @@ def play_midi(q):
             player.note_on(note, volume)
             time.sleep(wait_time)
             player.note_off(note, volume)
-            time.sleep(0.3)
+            time.sleep(0.03)
         pygame.midi.quit()
         del player
 
