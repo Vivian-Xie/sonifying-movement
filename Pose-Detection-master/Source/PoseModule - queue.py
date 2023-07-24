@@ -9,6 +9,9 @@ import threading
 from queue import Queue
 import copy
 
+import numpy as np
+import math
+
 class poseDetector():
 
     def __init__(self, static_image_mode = False,
@@ -103,7 +106,7 @@ def pose(q):
         img = detector.findPose(img)
         lmList = detector.getPosition(img)
         cycle+=1
-        if cycle==30:
+        if cycle==24:
             q.put(lmList)
             cycle=0
 
@@ -139,6 +142,7 @@ def play_midi(q):
         player.set_instrument(instrument)
         print(lmList)
         if lmList[20]:
+            """
             if lmList[20][1]<480:
                 player.note_on(note_Re, volume)
                 time.sleep(wait_time)
@@ -147,12 +151,18 @@ def play_midi(q):
                 player.note_on(note_Do, volume)
                 time.sleep(wait_time)
                 player.note_off(note_Do, volume)
+            """
+            note=pos_2_note(lmList[20][1],0,127)
+            player.note_on(note, volume)
+            time.sleep(wait_time)
+            player.note_off(note, volume)
             time.sleep(0.3)
         pygame.midi.quit()
         del player
-"""
-def pos_2_note():
-"""    
+
+def pos_2_note(data,MIN,MAX):
+    return int(MIN +(MAX-MIN)/960*data)
+
 
 
 
