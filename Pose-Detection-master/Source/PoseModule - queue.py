@@ -49,10 +49,12 @@ class poseDetector():
                 cx, cy = int(lm.x * w), int(lm.y * h)
                 lmList.append([id, cx, cy])
                 if draw:
-                    if cx<600:
+                    if cx<480:
                         cv2.circle(img, (cx, cy), 3, (255, 0, 255), cv2.FILLED)
+                        cv2.putText(img, str(lmList[-1][0]), (cx,cy+10), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 3)
                     else:
                         cv2.circle(img, (cx, cy), 3, (255, 255, 0), cv2.FILLED)
+                        cv2.putText(img, str(lmList[-1][0]), (cx,cy+10), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 3)
 
         return lmList
 
@@ -94,18 +96,23 @@ def pose(q):
     cap = cv2.VideoCapture(0)
     pTime = 0
     detector = poseDetector()
+    cycle=0
     while True:
         success, img = cap.read()
         img = cv2.resize(img, (960, 540))
         img = detector.findPose(img)
         lmList = detector.getPosition(img)
-        q.put(lmList)
+        cycle+=1
+        if cycle==30:
+            q.put(lmList)
+            cycle=0
 
         cTime = time.time()
         fps = 1 / (cTime - pTime)
         pTime = cTime
 
         cv2.putText(img, str(int(fps)), (30, 30), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 3)
+        
         cv2.imshow("Image", img)
         cv2.waitKey(1)
         if cv2.waitKey(10) == ord('q'):  # wait until 'q' key is pressed
@@ -117,10 +124,10 @@ def play_midi(q):
     
     device = 0     # device number in win10 laptop
     instrument = 9 # http://www.ccarh.org/courses/253/handout/gminstruments/
-    note_Do = 48   # http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm
+    note_Do = 48   # http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.html
     note_Re = 50
     note_Me = 52
-    volume = 127
+    volume = 127 
     wait_time = 0.5
     
     while True:
@@ -132,7 +139,7 @@ def play_midi(q):
         player.set_instrument(instrument)
         print(lmList)
         if lmList[20]:
-            if lmList[20][1]<600:
+            if lmList[20][1]<480:
                 player.note_on(note_Re, volume)
                 time.sleep(wait_time)
                 player.note_off(note_Re, volume)
@@ -140,10 +147,14 @@ def play_midi(q):
                 player.note_on(note_Do, volume)
                 time.sleep(wait_time)
                 player.note_off(note_Do, volume)
-            time.sleep(1)
+            time.sleep(0.3)
         pygame.midi.quit()
         del player
-        
+"""
+def pos_2_note():
+"""    
+
+
 
 def main():
     q=Queue()
