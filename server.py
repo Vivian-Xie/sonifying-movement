@@ -3,8 +3,10 @@ import threading
 import time
 
 serverSocket=socket(AF_INET,SOCK_STREAM)
-serverSocket.bind(("10.209.92.109",1200))
+#serverSocket.bind(("10.209.92.109",1200))
+#serverSocket.bind(("192.168.142.132",1200))
 #serverSocket.bind(("192.168.1.12",1200))
+serverSocket.bind(("127.0.0.1",1200))
 
 serverSocket.listen(20)
 print("the server is ready to accept info...")

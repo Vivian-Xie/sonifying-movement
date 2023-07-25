@@ -13,9 +13,10 @@ import json
 from socket import *
 print("client is activated")
 #host_name="10.209.92.109"
+#host_name="192.168.99.132"
 #host_name="127.0.0.1"
-host_name="192.168.99.132"
-#host_name="10.27.18.22"
+host_name="220.196.194.163"
+host_name="192.168.142.214"
 port_num=1200
 clientSocket=socket(AF_INET,SOCK_STREAM)
 clientSocket.connect((host_name,port_num))

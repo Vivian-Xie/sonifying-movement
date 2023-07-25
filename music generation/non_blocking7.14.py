@@ -50,12 +50,11 @@ def play_music_thread(music_queue):
 def for_socket(emotion,num):
     # initialize the model
     ec2vae_model = EC2VAE.init_model()
-
     # load model parameter
     ec2vae_param_path = './ec2vae/model_param/ec2vae-v1.pt'
     ec2vae_model.load_model(ec2vae_param_path)
     # x1: "From the new world" melody
-    file=open(file='/Users/yiruzhou/Documents/durf/icm-deep-music-generation-main/notes.txt',mode='r')
+    file=open(file='notes.txt',mode='r')
     data=file.readlines()
     #for i in range(len(data)):
         #data[i]=data[i].rstrip('\n')
@@ -247,7 +246,6 @@ info_thread = threading.Thread(target=process_info_thread, args=(music_queue, in
 music_thread.start()
 info_thread.start()
 music_queue.put("./demo/ec2vae-new-chord.mid")
-'''
 #此处为单机调试
 while True:
     info = input("请输入信息：")
@@ -274,6 +272,7 @@ while True:
         break
 clientSocket.close()
 
+'''
 # 等待音乐播放线程和信息处理线程结束
 music_queue.put(None)
 info_queue.put(None)
