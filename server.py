@@ -3,10 +3,10 @@ import threading
 import time
 
 serverSocket=socket(AF_INET,SOCK_STREAM)
-#serverSocket.bind(("10.209.92.109",1200))
+serverSocket.bind(("10.209.92.109",1200))
 #serverSocket.bind(("192.168.142.132",1200))
 #serverSocket.bind(("192.168.1.12",1200))
-serverSocket.bind(("127.0.0.1",1200))
+#serverSocket.bind(("127.0.0.1",1200))
 
 serverSocket.listen(20)
 print("the server is ready to accept info...")
@@ -25,11 +25,12 @@ def message2music():
                 connectionSocket2.send((message).encode())
                 print("message to the music generation client",message)
                 message=""
-                time.sleep(3.75)
+                time.sleep(3.7)
                 #sconnectionSocket.send((message+"haha").encode())
             else:
                 connectionSocket2.send(("neutral").encode())
-                time.sleep(3.75)
+                print("message to the music generation client neutral")
+                time.sleep(3.7)
         else:
             connectionSocket.close()
             connectionSocket2.close()

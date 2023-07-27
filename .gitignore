@@ -1,2 +1,3 @@
 
 music generation/ec2vae/model_param/ec2vae-v1.pt
+*.mid
