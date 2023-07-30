@@ -9,5 +9,5 @@ https://drive.google.com/file/d/16egAtz7rPRhU_2dv2EFX4us-EbRMvYSA/view?usp=shari
 
 
 # Server
-This project needs to be run on several computers and a [server](https://github.com/Vivian-Xie/sonfying-movement/blob/main/server.py) is needed to transmit information among computers. The server sends emotion and rhythm every 3.75 seconds to the end of music generation.
+This project needs to be run on several windows and a [server](https://github.com/Vivian-Xie/sonfying-movement/blob/main/server.py) is needed to transmit information among computers. The server sends emotion and rhythm every 3.75 seconds to the end of music generation.
 
